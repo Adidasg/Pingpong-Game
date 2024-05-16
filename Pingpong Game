@@ -1,0 +1,128 @@
+import turtle
+import winsound     
+wn = turtle.Screen()  #Creates a new window
+wn.title("PingPong by Adi")
+wn.bgcolor("black")
+wn.setup(width=800,height=600)
+wn.tracer(0)          #Doesn't let the window update itself and also controls game's speed
+
+#Score
+
+score_a = 0
+score_b = 0
+#Paddle A
+
+paddle_a=turtle.Turtle()   #Capital T bcoz of the class name
+paddle_a.speed(0)     #Animation speed of the paddle
+paddle_a.shape("square")
+paddle_a.color("white")
+paddle_a.shapesize(stretch_wid=5,stretch_len=1)
+paddle_a.penup()
+paddle_a.goto(-350,0)    #Paddle's placement
+
+#Paddle B
+paddle_b=turtle.Turtle()   #Capital T bcoz of the class name
+paddle_b.speed(0)     #Animation speed of the paddle
+paddle_b.shape("square")
+paddle_b.color("white")
+paddle_b.shapesize(stretch_wid=5,stretch_len=1)
+paddle_b.penup()
+paddle_b.goto(350,0)    #Paddle's placement
+
+
+
+#Ball
+ball=turtle.Turtle()   #Capital T bcoz of the class name
+ball.speed(0)     #Animation speed of the paddle
+ball.shape("square")
+ball.color("white")
+ball.penup()
+ball.goto(0,0)    #Paddle's placement
+
+ball.dx =  0.07    #ball movement by 0.07 pixels on right
+ball.dy = -0.07   #ball movement by 0.07 pixels to up
+
+# Pen
+pen=turtle.Turtle()
+pen.speed(0)
+pen.color("white")
+pen.penup()   # We don't want to create a line when we move a pen
+pen.hideturtle()
+pen.goto(0,260)
+pen.write("Player A: 0  Player B: 0", align="center", font=("Courier",24,"normal"))
+
+
+#Function
+def paddle_a_up():
+    y = paddle_a.ycor()   #Returns the y cordinate
+    y += 20 #Adds 2 pixels when the mouse goes up
+    paddle_a.sety(y)
+
+def paddle_a_down():
+    y = paddle_a.ycor()   #Returns the y cordinate
+    y -= 20 #Adds 2 pixels when the mouse goes up
+    paddle_a.sety(y)
+
+def paddle_b_up():
+    y = paddle_b.ycor()   #Returns the y cordinate
+    y += 20 #Adds 2 pixels when the mouse goes up
+    paddle_b.sety(y)
+
+def paddle_b_down():
+    y = paddle_b.ycor()   #Returns the y cordinate
+    y -= 20 #Adds 2 pixels when the mouse goes up
+    paddle_b.sety(y)
+
+#Keyboard Binding
+wn.listen()   #it tells the window to listen
+wn.onkeypress(paddle_a_up,"w")
+wn.onkeypress(paddle_a_down,"s")
+wn.onkeypress(paddle_b_up,"Up")   #To use up arrow key
+wn.onkeypress(paddle_b_down,"Down")
+
+
+#Main Game Loop
+while True:
+    wn.update()  #Whenver the loop runs it updates the screen
+
+
+    #Move the ball
+    ball.setx(ball.xcor() + ball.dx)
+    ball.sety(ball.ycor() + ball.dy)
+
+    #Border Checking
+    if ball.ycor() >290:
+        ball.sety(290)
+        ball.dy *=-1
+        winsound.PlaySound("18786.wav",winsound.SND_ASYNC)
+    if ball.ycor() <-290:
+        ball.sety(-290)
+        ball.dy *=-1
+        winsound.PlaySound("18786.wav",winsound.SND_ASYNC)
+    if ball.xcor() >390:
+        ball.goto(0,0)
+        ball.dx *= -1
+        score_a += 1
+        winsound.PlaySound("mixkit-arcade-retro-game-over-213.wav",winsound.SND_ASYNC)
+        pen.clear()
+        pen.write("Player A: {} Player B: {}".format(score_a,score_b), align="center", font=("Courier", 24, "normal"))
+
+    if ball.xcor() < -390:
+        ball.goto(0,0)
+        ball.dx *= -1
+        score_b += 1
+        winsound.PlaySound("mixkit-arcade-retro-game-over-213.wav",winsound.SND_ASYNC)
+        pen.clear()
+        pen.write("Player A: {}  Player B: {}".format(score_a,score_b), align="center", font=("Courier", 24, "normal"))
+
+    #paddle and ball collisions:
+    if (ball.xcor() > 340) and (ball.xcor() < 350) and (ball.ycor() < paddle_b.ycor() + 40 and ball.ycor() > paddle_b.ycor() -40 ):
+        ball.setx(340)
+        ball.dx *= -1
+        winsound.PlaySound("18786.wav",winsound.SND_ASYNC)
+    if (ball.xcor() < -340) and (ball.xcor() > -350) and (ball.ycor() < paddle_a.ycor() + 40 and ball.ycor() > paddle_a.ycor() -40 ):
+        ball.setx(-340)
+        ball.dx *= -1
+        winsound.PlaySound("18786.wav",winsound.SND_ASYNC)
+
+
